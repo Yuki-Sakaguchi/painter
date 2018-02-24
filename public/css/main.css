@@ -1,0 +1,58 @@
+.painter {
+  box-sizing: border-box;
+}
+
+.painter > * {
+  box-sizing: border-box;
+}
+
+.painter-canvas {
+  position: absolute;
+}
+
+.painter-tool {
+  position: fixed;
+  left: 0;
+  bottom: 30px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  transition: 0.5s;
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+}
+
+.painter-tool.active {
+  -webkit-transform: translateX(0);
+          transform: translateX(0);
+}
+
+.painter-tool__item {
+  width: 30px;
+  cursor: pointer;
+  background-color: black;
+  color: black;
+  text-align: center;
+  padding: 5px 5px 5px 10px;
+  margin-bottom: 10px;
+  border-radius: 0 15% 15% 0;
+  opacity: 0.5;
+  transition: 0.5s;
+}
+
+.painter-tool__item.active {
+  opacity: 1;
+}
+
+.painter-tool__item:hover {
+  opacity: 1;
+}
+
+.painter-tool__item > * {
+  pointer-events: none;
+}
+
+.painter-tool__item div {
+  background-color: white;
+  border-radius: 10%;
+}
