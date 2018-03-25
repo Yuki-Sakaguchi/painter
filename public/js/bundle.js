@@ -67,6 +67,9 @@
 /* 0 */
 /***/ (function(module, exports) {
 
+// TODO
+// 		・ブックマークレット化(githubを使って良き感じにすれば中身を書き換えやすい)
+//		・一つ戻る
 /**
  * ペインター
  */
@@ -83,7 +86,8 @@
         mode[mode["pen"] = 1] = "pen";
         mode[mode["eraser"] = 2] = "eraser";
         mode[mode["weight"] = 3] = "weight";
-        mode[mode["trash"] = 4] = "trash";
+        mode[mode["save"] = 4] = "save";
+        mode[mode["trash"] = 5] = "trash";
     })(mode || (mode = {}));
     ;
     /**
@@ -125,6 +129,7 @@
             [].forEach.call(elTool.children, function (e) { return e.addEventListener('click', changeMode); });
             window.addEventListener('resize', setWindowSize);
             elTool.getElementsByClassName('save')[0].addEventListener('click', save);
+            elTool.getElementsByClassName('trash')[0].addEventListener('click', trash);
         });
     }
     /**
@@ -182,6 +187,9 @@
      * @param e
      */
     function changeMode(e) {
+        if (e.target.getAttribute('data-mode') == 4) {
+            return;
+        }
         // 現在のモードを取得
         var elCurrent = [].filter.call(elTool.children, function (target) {
             if (editMode == parseInt(target.getAttribute(modeName))) {
@@ -220,10 +228,27 @@
         elSave.src = saveUrl;
         document.body.appendChild(elSave);
         elSave.addEventListener('load', function () {
+            elTool.style.visibility = 'hidden';
             html2canvas(document.querySelector('body')).then(function (canvas) {
-                document.body.appendChild(canvas);
+                // document.body.appendChild(canvas);
+                downloadImage(canvas);
+                elTool.style.visibility = 'inherit';
             });
         });
+    }
+    function trash() {
+        if (confirm('全てを削除します')) {
+            document.getElementById('painter-wrap').remove();
+        }
+    }
+    function downloadImage(canvas) {
+        var dataUrl = canvas.toDataURL("image/png");
+        var event = document.createEvent("MouseEvents");
+        event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+        a.setAttribute('href', dataUrl);
+        a.setAttribute('download', 'html2canvas動作確認の出力結果イメージ');
+        a.dispatchEvent(event);
     }
     // 実行
     window.addEventListener('load', init);

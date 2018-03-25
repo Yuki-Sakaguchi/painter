@@ -1,3 +1,7 @@
+// TODO
+// 		・ブックマークレット化(githubを使って良き感じにすれば中身を書き換えやすい)
+//		・一つ戻る
+
 /**
  * ペインター
  */
@@ -25,7 +29,8 @@
 		'pen' = 1,
 		'eraser' = 2,
 		'weight' = 3,
-		'trash' = 4
+		'save' = 4,
+		'trash' = 5
 	};
 
 	/**
@@ -74,6 +79,7 @@
 			[].forEach.call(elTool.children, (e: HTMLElement): void => e.addEventListener('click', changeMode));
 			window.addEventListener('resize', setWindowSize);
 			elTool.getElementsByClassName('save')[0].addEventListener('click', save);
+			elTool.getElementsByClassName('trash')[0].addEventListener('click', trash);
 		});
 	}
 
@@ -138,6 +144,10 @@
 	 * @param e 
 	 */
 	function changeMode(e): void {
+		if (e.target.getAttribute('data-mode') == 4) {
+			return;
+		}
+
 		// 現在のモードを取得
 		let elCurrent: HTMLElement[] = [].filter.call(elTool.children, (target: HTMLElement): boolean => {
 			if (editMode == parseInt(target.getAttribute(modeName))) {
@@ -183,10 +193,29 @@
 		document.body.appendChild(elSave);
 
 		elSave.addEventListener('load', () => {
+			elTool.style.visibility = 'hidden';
 			html2canvas(document.querySelector('body')).then(canvas => {
-				document.body.appendChild(canvas);
+				// document.body.appendChild(canvas);
+				downloadImage(canvas);
+				elTool.style.visibility = 'inherit';
 			});
 		});
+	}
+
+	function trash() {
+		if (confirm('全てを削除します')) {
+			document.getElementById('painter-wrap').remove();
+		}
+	}
+
+	function downloadImage(canvas) {
+		var dataUrl = canvas.toDataURL("image/png");
+		var event = document.createEvent("MouseEvents");
+		event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+		a.setAttribute('href', dataUrl);
+		a.setAttribute('download', 'html2canvas動作確認の出力結果イメージ');
+		a.dispatchEvent(event);
 	}
  
 	// 実行

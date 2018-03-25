@@ -22,26 +22,26 @@
     <body>
 
         <!-- ココカラ -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.1/css/all.css">
-        <link rel="stylesheet" href="./css/main.css">
-        <canvas id="painter-canvas" class="painter-canvas"></canvas>
-        <div id="painter" class="painter">
-            <ul id="painter-tool" class="painter-tool">
-                <li class="painter-tool__item pen active" data-mode="1"><div><i class="fas fa-pencil-alt"></i></div></li>
-                <li class="painter-tool__item eraser" data-mode="2"><div><i class="fa fa-eraser"></i></div></li>
-                <li class="painter-tool__item weidht" data-mode="3"><div><i class="fa fa-sliders-h"></i></div></li>
-                <li class="painter-tool__item save" data-mode="4"><div><i class="fas fa-sign-in-alt"></i></div></li>
-                <!-- <li class="painter-tool__item trash" data-mode="4"><div><i class="fas fa-trash-alt"></i></div></li> -->
-            </ul>
+        <div id="painter-wrap">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.1/css/all.css">
+            <link rel="stylesheet" href="./css/main.css">
+            <canvas id="painter-canvas" class="painter-canvas"></canvas>
+            <div id="painter" class="painter">
+                <ul id="painter-tool" class="painter-tool">
+                    <li class="painter-tool__item pen active" data-mode="1"><div><i class="fas fa-pencil-alt"></i></div></li>
+                    <li class="painter-tool__item eraser" data-mode="2"><div><i class="fa fa-eraser"></i></div></li>
+                    <!-- <li class="painter-tool__item weidht" data-mode="3"><div><i class="fa fa-sliders-h"></i></div></li> -->
+                    <li class="painter-tool__item save" data-mode="4"><div><i class="fas fa-sign-in-alt"></i></div></li>
+                    <li class="painter-tool__item trash" data-mode="5"><div><i class="fas fa-trash-alt"></i></div></li>
+                </ul>
+            </div>
+            <script src="./js/bundle.js"></script>
         </div>
+        <!-- ココカラ -->
 
         <div id="capture" style="padding: 10px; background: #f5da55">
             <h4 style="color: #000; ">Hello world!</h4>
         </div>
-        
-        <script src="./js/bundle.js"></script>
-        <!-- ココカラ -->
-
         <div class="sample">
             sample sample sample sample sample sample sample sample
             sample sample sample sample sample sample sample sample
