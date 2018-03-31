@@ -310,7 +310,7 @@
         a.dispatchEvent(event);
     }
     // 実行
-    window.addEventListener('load', init);
+    init();
 })();
 
 

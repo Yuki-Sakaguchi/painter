@@ -294,6 +294,5 @@
 	}
  
 	// 実行
-	window.addEventListener('load', init);
-
+	init();
 })();
