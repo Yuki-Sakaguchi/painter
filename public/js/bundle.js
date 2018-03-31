@@ -75,11 +75,12 @@
  */
 ;
 (function () {
+    var rootPath = 'https://yuki-sakaguchi.github.io/painter/public/';
     // 定数
     var createjsUrl = 'https://code.createjs.com/1.0.0/createjs.min.js', // http://code.createjs.com/easeljs-0.8.1.min.js',
-    saveUrl = './js/html2canvas.js', className = 'active', modeName = 'data-mode';
+    saveUrl = rootPath + "js/html2canvas.js", className = 'active', modeName = 'data-mode';
     // グローバル変数
-    var elCanvas, elTool, stage, line, art, lastPoint, counter, fontWeight, fontColor, editMode;
+    var elCanvas, elTool, elSave, stage, line, art, lastPoint, counter, fontWeight, fontColor, editMode;
     // モード
     var mode;
     (function (mode) {
@@ -94,6 +95,7 @@
      * 初期化
      */
     function init() {
+        createDom();
         // 必要なライブラリをロード
         var elCreate = document.createElement('script');
         elCreate.src = createjsUrl;
@@ -131,6 +133,68 @@
             elTool.getElementsByClassName('save')[0].addEventListener('click', save);
             elTool.getElementsByClassName('trash')[0].addEventListener('click', trash);
         });
+    }
+    /**
+     * 必要なDOM要素を作成する
+     */
+    function createDom() {
+        var elWrap = document.createElement('div');
+        elWrap.id = elWrap.className = 'painter-wrap';
+        var linkFont = document.createElement('link');
+        linkFont.setAttribute('rel', 'stylesheet');
+        linkFont.setAttribute('href', 'https://use.fontawesome.com/releases/v5.0.1/css/all.css');
+        var linkCss = document.createElement('link');
+        linkCss.setAttribute('rel', 'stylesheet');
+        linkCss.setAttribute('href', rootPath + "css/main.css");
+        var elCanvas = document.createElement('canvas');
+        elCanvas.id = elCanvas.className = 'painter-canvas';
+        var elPainter = document.createElement('div');
+        elPainter.id = elPainter.className = 'painter';
+        var elTool = document.createElement('ul');
+        elTool.id = elTool.className = 'painter-tool';
+        var toolItem = [
+            {
+                className: 'pen active',
+                mode: '1',
+                iconClassName: 'fas fa-pencil-alt',
+            },
+            {
+                className: 'eraser',
+                mode: '2',
+                iconClassName: 'fa fa-eraser',
+            },
+            {
+                className: 'save',
+                mode: '3',
+                iconClassName: 'fas fa-sign-in-alt',
+            },
+            {
+                className: 'trash',
+                mode: '4',
+                iconClassName: 'fas fa-trash-alt',
+            }
+        ];
+        for (var i = 0, len = toolItem.length; i < len; i++) {
+            var elToolItem = document.createElement('li');
+            elToolItem.setAttribute('class', "painter-tool__item " + toolItem[i].className);
+            elToolItem.setAttribute('data-mode', toolItem[i].mode);
+            var elDiv = document.createElement('div');
+            var elToolItemIcon = document.createElement('i');
+            elToolItemIcon.className = toolItem[i].iconClassName;
+            elTool.appendChild(elToolItem);
+            elToolItem.appendChild(elDiv);
+            elDiv.appendChild(elToolItemIcon);
+        }
+        elWrap.appendChild(linkFont);
+        elWrap.appendChild(linkCss);
+        elWrap.appendChild(elCanvas);
+        elWrap.appendChild(elPainter);
+        elPainter.appendChild(elTool);
+        document.body.appendChild(elWrap);
+        // save
+        elSave = document.createElement('script');
+        elSave.setAttribute('src', saveUrl);
+        elWrap.appendChild(elSave);
     }
     /**
      * 描画開始
@@ -224,16 +288,11 @@
      * 保存する
      */
     function save() {
-        var elSave = document.createElement('script');
-        elSave.src = saveUrl;
-        document.body.appendChild(elSave);
-        elSave.addEventListener('load', function () {
-            elTool.style.visibility = 'hidden';
-            html2canvas(document.querySelector('body')).then(function (canvas) {
-                // document.body.appendChild(canvas);
-                downloadImage(canvas);
-                elTool.style.visibility = 'inherit';
-            });
+        elTool.style.visibility = 'hidden';
+        html2canvas(document.querySelector('body')).then(function (canvas) {
+            // document.body.appendChild(canvas);
+            downloadImage(canvas);
+            elTool.style.visibility = 'inherit';
         });
     }
     function trash() {

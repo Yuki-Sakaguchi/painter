@@ -6,15 +6,18 @@
  * ペインター
  */
 ;(function() {
+	const rootPath = 'https://yuki-sakaguchi.github.io/painter/public/';
+
 	// 定数
 	const createjsUrl: string = 'https://code.createjs.com/1.0.0/createjs.min.js', // http://code.createjs.com/easeljs-0.8.1.min.js',
-				saveUrl: string = './js/html2canvas.js',
+				saveUrl: string = `${rootPath}js/html2canvas.js`,
 				className: string = 'active',
 				modeName: string = 'data-mode';
 
 	// グローバル変数
 	let elCanvas: HTMLElement,
 			elTool: HTMLElement,
+			elSave: HTMLElement,
 			stage: any,
 			line: createjs.Shape,
 			art: createjs.Shape,
@@ -37,6 +40,8 @@
 	 * 初期化
 	 */
 	function init(): void {
+		createDom();
+
 		// 必要なライブラリをロード
 		let elCreate: HTMLScriptElement = document.createElement('script');
 		elCreate.src = createjsUrl;
@@ -81,6 +86,82 @@
 			elTool.getElementsByClassName('save')[0].addEventListener('click', save);
 			elTool.getElementsByClassName('trash')[0].addEventListener('click', trash);
 		});
+	}
+
+	/**
+	 * 必要なDOM要素を作成する
+	 */
+	function createDom() {
+		let elWrap = document.createElement('div');
+		elWrap.id = elWrap.className = 'painter-wrap';
+
+		let linkFont = document.createElement('link');
+		linkFont.setAttribute('rel', 'stylesheet');
+		linkFont.setAttribute('href', 'https://use.fontawesome.com/releases/v5.0.1/css/all.css');
+
+		let linkCss = document.createElement('link');
+		linkCss.setAttribute('rel', 'stylesheet');
+		linkCss.setAttribute('href', `${rootPath}css/main.css`);
+
+		let elCanvas = document.createElement('canvas');
+		elCanvas.id = elCanvas.className = 'painter-canvas';
+		
+		let elPainter = document.createElement('div');
+		elPainter.id = elPainter.className = 'painter';
+
+		let elTool = document.createElement('ul');
+		elTool.id = elTool.className = 'painter-tool';
+
+		let toolItem = [
+			{
+				className: 'pen active',
+				mode: '1',
+				iconClassName: 'fas fa-pencil-alt',
+			},
+			{
+				className: 'eraser',
+				mode: '2',
+				iconClassName: 'fa fa-eraser',
+			},
+			{
+				className: 'save',
+				mode: '3',
+				iconClassName: 'fas fa-sign-in-alt',
+			},
+			{
+				className: 'trash',
+				mode: '4',
+				iconClassName: 'fas fa-trash-alt',
+			}
+		];
+
+		for (let i = 0, len = toolItem.length; i < len; i++) {
+			let elToolItem = document.createElement('li');
+			elToolItem.setAttribute('class', `painter-tool__item ${toolItem[i].className}`);
+			elToolItem.setAttribute('data-mode', toolItem[i].mode);
+
+			let elDiv = document.createElement('div');
+			
+			let elToolItemIcon = document.createElement('i');
+			elToolItemIcon.className = toolItem[i].iconClassName;
+
+			elTool.appendChild(elToolItem);
+			elToolItem.appendChild(elDiv);
+			elDiv.appendChild(elToolItemIcon);
+		}
+
+		elWrap.appendChild(linkFont);
+		elWrap.appendChild(linkCss);
+		elWrap.appendChild(elCanvas);
+		elWrap.appendChild(elPainter);
+		elPainter.appendChild(elTool);
+
+		document.body.appendChild(elWrap);
+
+		// save
+		elSave = document.createElement('script');
+		elSave.setAttribute('src', saveUrl);
+		elWrap.appendChild(elSave);
 	}
 
 	/**
@@ -188,17 +269,11 @@
 	 * 保存する
 	 */
 	function save() {
-		let elSave = document.createElement('script');
-		elSave.src = saveUrl;
-		document.body.appendChild(elSave);
-
-		elSave.addEventListener('load', () => {
-			elTool.style.visibility = 'hidden';
-			html2canvas(document.querySelector('body')).then(canvas => {
-				// document.body.appendChild(canvas);
-				downloadImage(canvas);
-				elTool.style.visibility = 'inherit';
-			});
+		elTool.style.visibility = 'hidden';
+		html2canvas(document.querySelector('body')).then(canvas => {
+			// document.body.appendChild(canvas);
+			downloadImage(canvas);
+			elTool.style.visibility = 'inherit';
 		});
 	}
 
